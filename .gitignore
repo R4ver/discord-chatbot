@@ -3,6 +3,7 @@ credentials.*
 **/credentials.*
 **/**/credentials.*
 ./brain
+brain
 
 # Logs
 logs
