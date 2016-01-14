@@ -1,0 +1,5 @@
+{
+    "coreCommands" : {
+        "ping": true
+    }
+}
