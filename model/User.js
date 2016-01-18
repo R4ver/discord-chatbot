@@ -8,9 +8,6 @@ class User {
     constructor( attrs ) {
         this.username = attrs.username;
         this.role = attrs.role;
-        this.status = attrs.status;
-        this.viewCount = attrs.count;
-        this.lastVisitTime = attrs.time;
     }
 
     /**

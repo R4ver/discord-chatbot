@@ -1,7 +1,7 @@
 'use strict';
 
 var fs = require('fs');
-const credentials = require('./setup/credentials');
+const credentials = require('./setup/custom/credentials');
 
 const DiscordClient = require('discord.io');
 let bot = new DiscordClient({
@@ -93,14 +93,28 @@ bot.on('message', function (user, userID, channelID, message, rawEvent) {
             to: channelID,
             message: ":alien:" 
         });
-    }   
+    }
 
     if ( convertMessage === "gems" ) {
         bot.sendMessage({
             to: channelID,
             message: "Gems are truly outrageous" 
         });
-    }    
+    }  
+
+    if ( convertMessage === "tsm" ) {
+        bot.sendMessage({
+            to: channelID,
+            message: "**TSM TSM TSM**"
+        });
+    }  
+    
+    if ( convertMessage === "sluta" ) {
+        bot.sendMessage({
+            to: channelID,
+            message: "Nej du måste sluta"
+        });
+    }
 
     if (convertMessage === "!swear") {
         let swearWord = swearWords[Math.floor(Math.random() * swearWords.length)];

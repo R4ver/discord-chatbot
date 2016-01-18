@@ -29,7 +29,7 @@ class Client {
         this.client.on('ready', function () {
             Log.log( 'Connected' );
             this.setup();
-            //this.sendPressence();
+            this.sendPressence();
         }.bind(this) );
     }
 
@@ -37,22 +37,81 @@ class Client {
         this.client.editUserInfo({
             //avatar: require('fs').readFileSync('../setup/custom/images/fullyerect.jpg', 'base64'), //Optional
             password: this.credentials.password, //Required
-            username: 'The Best Bot' //Optional
+            username: runtime.credentials.botName //Optional
         });
     }
 
     sendPressence() {
         this.client.sendMessage({
             to: this.credentials.channel,
-            message: "I has return with new code! Not done though.."
+            message: runtime.credentials.botName + " 2.0 Initialized"
         })
     }
 
-    listen(credentials) {
-        this.client.on('message', function( user, userID, channelID, message, rawEvent, credentials ) {
-            Log.log("User: " + user + "\nuserID: " + userID + "\nchannelID: " + channelID + "\nmessage: " + message + "\nrawEvent: " + rawEvent, "\ncredentials: " + credentials );
-            this.sendMessage(channelID, "Got the message");
+    listen(action) {
+        this.client.on('message', function(user, userID, channelID, message, rawEvent) {          
+            let StringedEvent = JSON.stringify(rawEvent);
+            action(StringedEvent); 
         }.bind(this) );
+    }
+
+    /**
+     * Returns the user based on the specified username.
+     * @param  {string} username
+     * @return {object}
+     */
+    static getUser( username ) {
+        const users = runtime.brain.get( 'users' ) || {};
+        let userObj = users[ username ];
+
+        if ( !userObj ) {
+            // If the user joined the channel for the first time,
+            // while the bot was not connected, the user will not
+            // have an entry in the 'users' brain.
+            // Create the entry for the user here
+            userObj = {
+                username: username,
+                count: 1,
+                time: new Date().getTime()
+            };
+            users[ username ] = userObj;
+            runtime.brain.set( 'users', users );
+        }
+
+        return new User( userObj );
+    }
+
+    /**
+     * Parse the message 
+     * @param  {string} event
+     * @param  {string} credentials
+     * @return {object}
+     */
+    static parseMessage( event, credentials ) {
+        let type = 'message';
+        let rawEvent = JSON.parse(event);
+        let username = rawEvent.d.author.username;
+        let message = rawEvent.d.content;
+        let rateLimited = false;
+
+        // Rate limiting
+        const now = new Date().getTime();
+        let messages = runtime.brain.get( 'userMessages' ) || {};
+        let userMessageLog = messages[ username ];
+
+        // Don't rate limit the bot
+        if ( username !== credentials.username && userMessageLog ) {
+            let lastCommandTimeExists = userMessageLog.lastCommandTime > 0;
+
+            if ( lastCommandTimeExists && now - userMessageLog.lastCommandTime < 3000 ) { // 3 seconds
+                rateLimited = true;
+            }
+        }
+
+        let user = Client.getUser( username );
+
+        // Return the parsed message
+        return { type, user, message, rateLimited, rawEvent };
     }
 
     sendMessage( channelID, message ) {

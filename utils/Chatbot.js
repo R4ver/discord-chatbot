@@ -1,11 +1,13 @@
 'use strict';
 
+const DiscordClient = require('discord.io');
 const Client = require( './Client' );
 const Log = require('./Log');
 const Loader = require('./Loader');
 let runtime = require('./Runtime');
 
 class ChatBot {
+
     static start() {
         // Load core commands
         Loader.loadCoreCommands( ( coreCommands ) => {
@@ -27,7 +29,7 @@ class ChatBot {
                 // Start the websocket server
 
                 // Start listening for stanzas
-                chat.listen(runtime.credentials);
+                ChatBot.Listen(chat);
             } );
         } );
     }
@@ -49,6 +51,31 @@ class ChatBot {
         });
     }
 
+    static Listen(chat) {
+        chat.listen(function(message) {
+            // Skip the initial messages when starting the bot
+            if ( ChatBot.isStartingUp() ) {
+                return;
+            }
+            
+            runtime.brain.start( __dirname + '/../brain' );
+
+            let parsedMessage = Client.parseMessage(message, runtime.credentials);
+
+            parsedMessage.ranCommand = false;
+            // Run the incoming stanza against
+            // the core commands for the stanza's type.
+            let coreCommandsForStanzaType = runtime.coreCommands[ parsedMessage.type ];
+            if ( coreCommandsForStanzaType ) {
+                coreCommandsForStanzaType.forEach( ( command ) => {
+                    if ( ChatBot.runCommand( command, parsedMessage, chat ) ) {
+                        parsedMessage.ranCommand = true;
+                    }
+                } );
+            }
+        });
+    }
+
     /**
      * Runs a passed-in command, if the regex matches
      * and the rateLimiting criteria matches.
@@ -57,17 +84,16 @@ class ChatBot {
      * @param  {Client} chat
      * @return {void}
      */
-    static runCommand( command, parsedStanza, chat ) {
-        Log.log("Running command, or trying");
+    static runCommand( command, parsedMessage, chat ) {
 
         try {
-            var regexMatched =  command.regex && command.regex.test( parsedStanza.message.toLowerCase() );
+            var regexMatched =  command.regex && command.regex.test( parsedMessage.message.toLowerCase() );
             var ignoreRateLimiting = command.ignoreRateLimiting;
-            var passesRateLimiting = !parsedStanza.rateLimited || ( parsedStanza.rateLimited && ignoreRateLimiting );
+            var passesRateLimiting = !parsedMessage.rateLimited || ( parsedMessage.rateLimited && ignoreRateLimiting );
 
             if ( regexMatched && passesRateLimiting ) {
-                command.action( chat, parsedStanza );
-                Log.log('running command');
+                command.action( chat, parsedMessage );
+
                 // If we are ignoring rate limiting,
                 // don't say we ran a command.
                 if ( !ignoreRateLimiting ) {
@@ -75,7 +101,7 @@ class ChatBot {
                 }
             }
         } catch ( e ) {
-            console.trace( 'Command error: ', command, e );
+            Log.log( 'Command error: ', command, e );
         }
     }
 
@@ -85,13 +111,14 @@ class ChatBot {
      */
     static isStartingUp() {
         const messageTime = new Date().getTime();
-        if ( messageTime - runtime.startUpTime < 5000 ) { // 5 seconds
-            Log.log( "Skipping startup messages" );
+        if ( messageTime - runtime.startUpTime < 10000 ) { // 10 seconds
+            Log.log('Starting up, skipping message');
             return true;
         }
 
         return false;
     }
+
 }
 
 module.exports = ChatBot;
