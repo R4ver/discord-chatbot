@@ -4,6 +4,7 @@ credentials.*
 **/**/credentials.*
 ./brain
 brain
+tenc
 
 # Logs
 logs
