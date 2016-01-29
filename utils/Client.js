@@ -29,7 +29,7 @@ class Client {
         this.client.on('ready', function () {
             Log.log( 'Connected' );
             this.setup();
-            this.sendPressence();
+            //this.sendPressence();
         }.bind(this) );
     }
 
@@ -38,6 +38,10 @@ class Client {
             //avatar: require('fs').readFileSync('../setup/custom/images/fullyerect.jpg', 'base64'), //Optional
             password: this.credentials.password, //Required
             username: runtime.credentials.botName //Optional
+        });
+
+        this.client.setPresence({
+            game: "Boku no Pico: Online"    
         });
     }
 
@@ -49,7 +53,8 @@ class Client {
     }
 
     listen(action) {
-        this.client.on('message', function(user, userID, channelID, message, rawEvent) {          
+        this.client.on('message', function(user, userID, channelID, message, rawEvent) {
+            rawEvent['channelID'] = rawEvent.d.channel_id;
             let StringedEvent = JSON.stringify(rawEvent);
             action(StringedEvent); 
         }.bind(this) );
@@ -60,9 +65,10 @@ class Client {
      * @param  {string} username
      * @return {object}
      */
-    static getUser( username ) {
+    static getUser( id, username ) {
+
         const users = runtime.brain.get( 'users' ) || {};
-        let userObj = users[ username ];
+        let userObj = users[ id ];
 
         if ( !userObj ) {
             // If the user joined the channel for the first time,
@@ -71,10 +77,20 @@ class Client {
             // Create the entry for the user here
             userObj = {
                 username: username,
-                count: 1,
+                id: id,
                 time: new Date().getTime()
             };
-            users[ username ] = userObj;
+            users[ id ] = userObj;
+            runtime.brain.set( 'users', users );
+        }
+
+        if ( username != userObj.username ) {
+            userObj = {
+                username: username,
+                id: id,
+                time: new Date().getTime()
+            };
+            users[ id ] = userObj;
             runtime.brain.set( 'users', users );
         }
 
@@ -91,6 +107,7 @@ class Client {
         let type = 'message';
         let rawEvent = JSON.parse(event);
         let username = rawEvent.d.author.username;
+        let userID = rawEvent.d.author.id;
         let message = rawEvent.d.content;
         let rateLimited = false;
 
@@ -108,16 +125,20 @@ class Client {
             }
         }
 
-        let user = Client.getUser( username );
+        let user = Client.getUser( userID, username );
 
         // Return the parsed message
         return { type, user, message, rateLimited, rawEvent };
     }
 
-    sendMessage( channelID, message ) {
+    sendMessage( message, channelID ) {
         if ( runtime.debug ) {
             Log.log('DEBUGGING: ' + message);
             return false;
+        }
+
+        if ( channelID === undefined ) {
+            channelID = runtime.credentials.channel;
         }
 
         console.log(message + " | " + channelID);

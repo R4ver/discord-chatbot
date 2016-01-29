@@ -1,0 +1,11 @@
+{
+    "name": "OSM Opping Plugin",
+    "version": "1.0.0",
+    "description": "Gives the streamer the ability to op users to a specific lvl; Mod, VIP, Donator or Potato. Level names can be changed, but never change the level key",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Frederik Jensen-Petersen <raver13372@gmail.com>",
+    "license": "MIT"
+}

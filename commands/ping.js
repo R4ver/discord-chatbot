@@ -1,14 +1,13 @@
 'use strict'
 
 const runtime = require('../utils/Runtime');
-const regex = new RegExp( /^(!|\/)ping$/ );
+const regex = new RegExp( /^(_)ping$/ );
 
 module.exports = [{
     name: '!ping',
     types: ['message'],
     regex: regex,
     action: function( chat, stanza ) {
-        console.log(stanza);
-        chat.sendMessage(runtime.credentials.channel, 'pong');
+        chat.sendMessage('pong');
     }
-}]; 
+}];

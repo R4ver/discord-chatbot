@@ -1,5 +1,5 @@
 {
     "coreCommands" : {
-        "ping": true
+        "info": true
     }
 }

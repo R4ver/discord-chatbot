@@ -7,6 +7,7 @@ const availableStatuses = Settings.getSetting( 'user-status', 'statuses' );
 class User {
     constructor( attrs ) {
         this.username = attrs.username;
+        this.id = attrs.id;
         this.role = attrs.role;
     }
 
@@ -18,10 +19,8 @@ class User {
         let users = runtime.brain.get( 'users' ) || {};
         users[ this.username ] = {
             username: this.username,
-            count: this.viewCount,
-            time: this.lastVisitTime,
-            role: this.role,
-            status: this.status
+            id: this.id,
+            role: this.role
         };
         runtime.brain.set( 'users', users );
     }
@@ -49,12 +48,12 @@ class User {
         return this.hasStatus( 'moderator' );
     }
 
-    isStreamer() {
-        return this.username === runtime.credentials.room;
+    isAdmin() {
+        return this.id === runtime.credentials.admin;
     }
 
     isBot() {
-        return this.username === runtime.credentials.username;
+        return this.username === runtime.credentials.botID;
     }
 }
 

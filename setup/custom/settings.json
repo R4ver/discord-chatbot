@@ -1,5 +1,6 @@
 {
-    "coreCommands" : {
-        "ping": true
+    "plugins": {
+        "op": true,
+        "rebelobot": true
     }
 }

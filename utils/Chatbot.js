@@ -73,6 +73,17 @@ class ChatBot {
                     }
                 } );
             }
+
+            // Run the incoming stanza against
+            // the plugin commands for the stanza's type.
+            let pluginCommandsForStanzaType = runtime.pluginCommands[ parsedMessage.type ];
+            if ( pluginCommandsForStanzaType ) {
+                pluginCommandsForStanzaType.forEach( ( command ) => {
+                    if ( ChatBot.runCommand( command, parsedMessage, chat ) ) {
+                        parsedMessage.ranCommand = true;
+                    }
+                } );
+            }
         });
     }
 
