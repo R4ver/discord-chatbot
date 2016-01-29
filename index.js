@@ -5,7 +5,7 @@
  */
 
 const credentials = require('./setup/custom/credentials');
-const Brain = require('./utils/Brain');
+const Brain = require(__dirname + '/utils/Brain');
 const ChatBot = require('./utils/ChatBot');
 
 // Build the initial runtime object
