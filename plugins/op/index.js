@@ -105,9 +105,9 @@ module.exports = [{
 
         //Check if the user exists in the chat, else print "user not found"
         if ( user ) {
-            chat.sendMessage(`**${user.opName}'s** rank is **${user.opLvl}**`);
+            chat.sendMessage(`**${user.opName}'s** rank is **${user.opLvl}**`, stanza.rawEvent.channelID);
         } else {
-            chat.sendMessage(`**${username}** has no rank`);
+            chat.sendMessage(`**${username}** has no rank`, stanza.rawEvent.channelID);
         }
     }
 }]
