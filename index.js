@@ -26,4 +26,4 @@ if ( !runtime.credentials.email || !runtime.credentials.password || !runtime.cre
 }
 
 runtime.brain.start( __dirname + "/brain" );
-ChatBot.start();
+ChatBot.start(); 
