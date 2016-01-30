@@ -131,15 +131,13 @@ class Client {
         return { type, user, message, rateLimited, rawEvent };
     }
 
-    sendMessage( message, channelID ) {
+    sendMessage( message, stanza ) {
         if ( runtime.debug ) {
             Log.log('DEBUGGING: ' + message);
             return false;
         }
 
-        if ( channelID === undefined ) {
-            channelID = runtime.credentials.channel;
-        }
+        let receiver = stanza.rawEvent.channelID;
 
         console.log(message + " | " + channelID);
 
@@ -161,7 +159,7 @@ class Client {
         // Only send the message to the server, if the difference is > 5 seconds
         if ( !previousMessage || messageObj.time - previousMessage.time > 5000 ) { // 5 seconds
             this.client.sendMessage({
-                to: channelID,
+                to: receiver,
                 message: message
             });
         } else {

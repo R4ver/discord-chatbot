@@ -32,7 +32,7 @@ module.exports = [{
 
             //Check if the op level specified is valid
             if ( !opLevels.hasOwnProperty(newOpLvl) ) {
-                    chat.sendMessage(`Level: "${newOpLvl}" is not a valid level`);
+                    chat.sendMessage(`Level: "${newOpLvl}" is not a valid level`, stanza);
                     return null;
             }
 
@@ -49,7 +49,7 @@ module.exports = [{
 
                 runtime.brain.set("chatOPS", chatOPS);
 
-                chat.sendMessage(`**Opped user:** *${newOpName}*\n**to:** *${newOpLvl}*`);
+                chat.sendMessage(`**Opped user:** *${newOpName}*\n**to:** *${newOpLvl}*`, stanza);
             } else {
 
                 //If the opped user already exists change the op level.
@@ -63,7 +63,7 @@ module.exports = [{
 
                 runtime.brain.set("chatOPS", chatOPS);
 
-                chat.sendMessage(`**Opped user:** *${newOpName}*\n**From:** *${existingOpLvl}*\n**To:** *${newOpLvl}*`);
+                chat.sendMessage(`**Opped user:** *${newOpName}*\n**From:** *${existingOpLvl}*\n**To:** *${newOpLvl}*`, stanza);
             }
         }
 
@@ -81,9 +81,9 @@ module.exports = [{
 
         //Check if the opped user exists, print the rank, else the user is a viewer
         if ( opID ) {
-            chat.sendMessage(stanza.user.username + "\'s rank is **" + opID.opLvl + "**", stanza.rawEvent.channelID);
+            chat.sendMessage(stanza.user.username + "\'s rank is **" + opID.opLvl + "**", stanza);
         } else {
-            chat.sendMessage(stanza.user.username + " has no rank", stanza.rawEvent.channelID);
+            chat.sendMessage(stanza.user.username + " has no rank", stanza);
         }
     }
 }, {
@@ -105,9 +105,9 @@ module.exports = [{
 
         //Check if the user exists in the chat, else print "user not found"
         if ( user ) {
-            chat.sendMessage(`**${user.opName}'s** rank is **${user.opLvl}**`, stanza.rawEvent.channelID);
+            chat.sendMessage(`**${user.opName}'s** rank is **${user.opLvl}**`, stanza);
         } else {
-            chat.sendMessage(`**${username}** has no rank`, stanza.rawEvent.channelID);
+            chat.sendMessage(`**${username}** has no rank`, stanza);
         }
     }
 }]
