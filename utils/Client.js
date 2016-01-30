@@ -139,7 +139,7 @@ class Client {
 
         let receiver = stanza.rawEvent.channelID;
 
-        console.log(message + " | " + channelID);
+        console.log(message + " | " + receiver);
 
         // Get the previously sent messages
         let messages = runtime.brain.get('messages') || {};
