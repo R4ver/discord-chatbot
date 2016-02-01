@@ -1,6 +1,7 @@
 {
     "plugins": {
         "op": true,
-        "rebelobot": true
+        "rebelobot": true,
+        "gitstats": true
     }
 }

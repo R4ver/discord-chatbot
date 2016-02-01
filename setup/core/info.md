@@ -13,8 +13,9 @@
 **Commands:**
 
     **>info** => Shows this message.
-    **>op** {@username} {#rank} => **[ADMIN ONLY]** Sets a specific rank for a user.
-    **>rank** | >rank {@username} => Show either your rank or if given a username, shows their rank.
+    **>op {@username} {#rank}**  => **[ADMIN ONLY]** Sets a specific rank for a user.
+    **>rank | >rank {@username}** => Show either your rank or if given a username, shows their rank.
+    **>gitstats {github username}** => Shows information about the github user.
 
 ```markdown
 # Information end #

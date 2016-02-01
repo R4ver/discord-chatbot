@@ -1,10 +1,11 @@
 {
   "name": "aspitoest-wp-theme",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "devDependencies": {
     "core-js": "^2.0.3",
     "crypto": "0.0.3",
     "discord.io": "^1.6.5",
+    "github-api": "^0.11.2",
     "jsdom": "^7.2.2",
     "loader": "^2.0.0",
     "lodash": "^3.10.1",

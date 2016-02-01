@@ -14,7 +14,7 @@ module.exports = [{
 
         fs.readFile(__dirname + "/../setup/core/info.md", 'utf8', function(err, data) {
             if (err) throw err;
-            chat.sendMessage(data, stanza.user.id);
+            chat.sendMessage(data, stanza);
         });
     }
 }];
