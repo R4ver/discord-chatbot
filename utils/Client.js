@@ -55,6 +55,7 @@ class Client {
     listen(action) {
         this.client.on('message', function(user, userID, channelID, message, rawEvent) {
             rawEvent['channelID'] = rawEvent.d.channel_id;
+            rawEvent['userID'] = userID;
             let StringedEvent = JSON.stringify(rawEvent);
             action(StringedEvent); 
         }.bind(this) );
@@ -138,6 +139,46 @@ class Client {
         }
 
         let receiver = stanza.rawEvent.channelID;
+
+        console.log(message + " | " + receiver);
+
+        // Get the previously sent messages
+        let messages = runtime.brain.get('messages') || {};
+
+        // Hash the message and use it as our key.
+        // Grab the previous message that uses the same hash.
+        // (ie: the message text is the same).
+        // Build the new message object.
+        let hash = crypto.createHash('md5').update( message ).digest('hex');
+        let previousMessage = messages[ hash ];
+        let messageObj = {
+            message: message,
+            time: new Date().getTime()
+        };
+
+        // Compare the previous message time vs the current message time
+        // Only send the message to the server, if the difference is > 5 seconds
+        if ( !previousMessage || messageObj.time - previousMessage.time > 5000 ) { // 5 seconds
+            this.client.sendMessage({
+                to: receiver,
+                message: message
+            });
+        } else {
+            Log.log( 'Skipping sendMessage - previous message sent within 5 seconds' );
+        }
+
+        // Save the message to the messages store
+        messages[ hash ] = messageObj;
+        runtime.brain.set( 'messages', messages );
+    }
+
+    sendPrivate( message, stanza ) {
+        if ( runtime.debug ) {
+            Log.log('DEBUGGING: ' + message);
+            return false;
+        }
+
+        let receiver = stanza.rawEvent.userID;
 
         console.log(message + " | " + receiver);
 
