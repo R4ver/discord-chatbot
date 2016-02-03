@@ -132,6 +132,10 @@ class Client {
         return { type, user, message, rateLimited, rawEvent };
     }
 
+    getServers() {
+        Log.log(this.client.servers['131761235451576320']);
+    }
+
     sendMessage( message, stanza ) {
         if ( runtime.debug ) {
             Log.log('DEBUGGING: ' + message);

@@ -2,6 +2,7 @@
     "plugins": {
         "op": true,
         "rebelobot": true,
-        "gitstats": true
+        "gitstats": true,
+        "musicplayer": true
     }
 }
