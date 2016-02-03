@@ -54,6 +54,7 @@ class Client {
 
     listen(action) {
         this.client.on('message', function(user, userID, channelID, message, rawEvent) {
+            rawEvent['serverFromChannel'] = this.client.serverFromChannel(channelID);
             rawEvent['channelID'] = rawEvent.d.channel_id;
             rawEvent['userID'] = userID;
             let StringedEvent = JSON.stringify(rawEvent);
@@ -133,7 +134,7 @@ class Client {
     }
 
     getServers() {
-        Log.log(this.client.servers['131761235451576320']);
+        return this.client.servers;
     }
 
     sendMessage( message, stanza ) {
