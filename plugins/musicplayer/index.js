@@ -4,8 +4,9 @@ const runtime = require('../../utils/Runtime');
 const Client = require('../../utils/Client');
 const Log = require('../../utils/Log');
 const auth = require('../op/auth');
-const joinRegex = new RegExp( /^(>)bot\sjoin\s(.+)$/ );
-const leaveRegex = new RegExp( /^(>)bot\sleave$/ );
+const joinRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.join\\s(.+)$" );
+const leaveRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.leave$" );
+const playMusicRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.playmusic$" );
 
 let voiceChannelObj = {};
 
@@ -34,7 +35,7 @@ module.exports = [{
                     }
 
                     chat.client.joinVoiceChannel(servers[serverFromChannel].channels[channel].id, function() {
-                        chat.sendMessage("Joined voice channel: **" + channelName + "**", stanza);
+                        chat.sendMessage("Joined voice channel: " + channelName, stanza);
                     });
                 }
             } 
@@ -49,11 +50,29 @@ module.exports = [{
         let user = Client.getUser(stanza.user.id, stanza.user.username);
         if ( user.isAdmin() || auth.has(user.id, "mod") ) {
 
-            if ( voiceChannelObj.id == "" )
+            if ( voiceChannelObj.id == undefined ) {
                 chat.sendMessage("Currently not connected to a voice channel", stanza);
+                return;
+            }
 
             chat.client.leaveVoiceChannel(voiceChannelObj.id);
-            chat.sendMessage("Left voice channel: **" + voiceChannelObj.name + "**", stanza);
+            chat.sendMessage("Left voice channel: " + voiceChannelObj.name, stanza);
         }
+    }
+}, {
+    name: 'Join',
+    types: ['message'],
+    regex: playMusicRegex,
+    action: function( chat, stanza ) {
+        let user = Client.getUser(stanza.user.id, stanza.user.username);
+        if ( user.isAdmin() || auth.has(user.id, "mod") ) {
+            chat.client.getAudioContext({ channel: voiceChannelObj.id, stereo: true}, function(stream) {
+                stream.playAudioFile('sandstorm.mp3'); //To start playing an audio file, will stop when it's done.
+                stream.stopAudioFile(); //To stop an already playing file
+                stream.once('fileEnd', function() {
+                    //Do something now that file is done playing. This event only works for files.
+                });
+            });
+        }     
     }
 }];

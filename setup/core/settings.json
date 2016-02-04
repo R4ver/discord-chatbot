@@ -1,5 +1,7 @@
 {
+    "prefix": "$",
     "coreCommands" : {
-        "info": true
+        "info": true,
+        "presence": true
     }
 }

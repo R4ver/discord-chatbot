@@ -7,5 +7,6 @@ module.exports = {
     websocketCommands: null,
     startupTime: 0,
     credentials: null,
-    brain: null
+    brain: null,
+    prefix: null
 };

@@ -7,6 +7,7 @@
 const credentials = require('./setup/custom/credentials');
 const Brain = require('./utils/Brain');
 const ChatBot = require('./utils/Chatbot');
+const CoreSettings = require('./setup/core/settings.json');
 
 // Build the initial runtime object
 let runtime = require('./utils/Runtime');
@@ -17,6 +18,7 @@ runtime.websocketCommands = null;
 runtime.startUpTime = new Date().getTime();
 runtime.credentials = credentials;
 runtime.brain = Brain;
+runtime.prefix = CoreSettings.prefix;
 
 // Verify credentials exist
 if ( !runtime.credentials.email || !runtime.credentials.password || !runtime.credentials.token ) {

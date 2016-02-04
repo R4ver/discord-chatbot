@@ -166,7 +166,7 @@ class Client {
         if ( !previousMessage || messageObj.time - previousMessage.time > 5000 ) { // 5 seconds
             this.client.sendMessage({
                 to: receiver,
-                message: message
+                message: "`" + message + "`"
             });
         } else {
             Log.log( 'Skipping sendMessage - previous message sent within 5 seconds' );
