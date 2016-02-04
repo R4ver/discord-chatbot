@@ -7,6 +7,9 @@ brain
 tenc
 .alpha
 **/**/stanza.json
+*.mp3
+**/*.mp3
+**/**/*.mp3
 
 # Logs
 logs
