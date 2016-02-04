@@ -4,14 +4,75 @@ const runtime = require('../../utils/Runtime');
 const Client = require('../../utils/Client');
 const Log = require('../../utils/Log');
 const auth = require('../op/auth');
+const fetch = require('node-fetch');
+const ffmpeg = require('fluent-ffmpeg');
+const crypto = require('crypto');
 const joinRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.join\\s(.+)$" );
 const leaveRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.leave$" );
 const playMusicRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.playmusic$" );
 const stopMusicRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.stopmusic$" );
+const addMusicRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.addmusic\\s(.+)$" );
+const playNextRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.playnext$" );
 
 let voiceChannelObj = {};
 
+let playSong = (chat, stanza, index) => {
+    index = index || null;
+
+    let playList = runtime.brain.get('playList') || {};
+    let currentSongIndex = playList["currentSongIndex"];
+
+    console.log(currentSongIndex);
+
+    chat.client.getAudioContext({ channel: voiceChannelObj.id, stereo: true}, function(stream) {
+        //Stop every song at the start
+        stream.stopAudioFile();
+
+        if ( index != null ) {
+            fetch("http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + playList.songList[currentSongIndex].link)
+                .then(function(res) {
+                    return res.text();
+                }).then(function(body) {
+                    let _body = JSON.parse(body);
+                    console.log(_body.link);
+                    stream.playAudioFile(_body.link); //To start playing an audio file, will stop when it's done.
+                    chat.sendMessage(playList.songList[currentSongIndex].title, stanza);
+                });
+        }
+
+        console.log(playList.songList[currentSongIndex].link);
+
+        fetch("http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + playList.songList[currentSongIndex].link)
+            .then(function(res) {
+                return res.text();
+            }).then(function(body) {
+                let _body = JSON.parse(body);
+                //console.log(_body.link);
+                stream.playAudioFile(_body.link); //To start playing an audio file, will stop when it's done.
+                chat.sendMessage(playList.songList[currentSongIndex].title, stanza);
+            });
+
+        // stream.once('fileEnd', function() {
+        //     playList["currentSongIndex"] = ++currentSongIndex;
+        //     runtime.brain.set('playList', playList);
+        //     chat.sendMessage('Now Playing: ' + playList.songList[currentSongIndex].title, stanza);
+        // });
+    });
+}
+
 module.exports = [{
+    types: ['message'],
+    action: function( chat ) {
+        let playList = runtime.brain.get('playList') || {};
+
+        let playListSetup = {
+            currentSongIndex: 0,
+            songList: []
+        };
+
+        runtime.brain.set('playList', playListSetup);
+    }
+}, {
     name: 'Join',
     types: ['message'],
     regex: joinRegex,
@@ -57,8 +118,48 @@ module.exports = [{
             }
 
             chat.client.leaveVoiceChannel(voiceChannelObj.id);
+            voiceChannelObj = {};
             chat.sendMessage("Left voice channel: " + voiceChannelObj.name, stanza);
         }
+    }
+},{
+    name: 'addsong',
+    types: ['message'],
+    regex: addMusicRegex,
+    action: function( chat, stanza ) {
+        let user = Client.getUser(stanza.user.id, stanza.user.username);
+        if ( user.isAdmin() || auth.has(user.id, "mod") ) {
+            let match = addMusicRegex.exec( stanza.message );
+            let youtubeLink = match[2];
+            console.log(youtubeLink);
+
+            //Get the playList
+            let hash = crypto.createHash('md5').update( youtubeLink ).digest('hex');
+            let playList = runtime.brain.get("playList") || {};
+
+            fetch("http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + youtubeLink)
+                .then(function(res) {
+                    return res.text();
+                }).then(function(body) {
+                    console.log(body.link);
+                    let _body = JSON.parse(body);
+                    console.log(_body);
+                    
+                    if ( playList['songList'] === undefined ) {
+                        playList['currentSongIndex'] = 0;
+                        playList['songList'] = [];
+                    }
+
+                    let newTrack = {
+                        title: _body.title,
+                        length: _body.length,
+                        link: youtubeLink
+                    }
+
+                    playList[ "songList" ].push(newTrack);
+                    runtime.brain.set("playList", playList);
+                });
+        }     
     }
 }, {
     name: 'playmusic',
@@ -67,13 +168,37 @@ module.exports = [{
     action: function( chat, stanza ) {
         let user = Client.getUser(stanza.user.id, stanza.user.username);
         if ( user.isAdmin() || auth.has(user.id, "mod") ) {
-            chat.client.getAudioContext({ channel: voiceChannelObj.id, stereo: true}, function(stream) {
-                stream.playAudioFile(__dirname + '/music/sandstorm.mp3'); //To start playing an audio file, will stop when it's done.
-                //stream.stopAudioFile(); //To stop an already playing file
-                stream.once('fileEnd', function() {
-                    chat.sendMessage('Stopped playing song.', stanza);
-                });
-            });
+            let playList = runtime.brain.get('playList');
+            let currentSongIndex = playList["currentSongIndex"];
+            console.log(currentSongIndex);
+            playSong(chat, stanza);
+            //http:\/\/www.youtubeinmp3.com\/download\/get\/?i=KVYQFjr9VHSmy5%2F0fKTYhx6WfSsS6kM73NFDRO3SeJRKLI7L6XNQayDeZDVfYh1TVADlrRFs6kVYLd%2BZ9qEerw%3D%3D
+            //http://www.youtubeinmp3.com/download/get/?i=KVYQFjr9VHSmy5%2F0fKTYhx6WfSsS6kM73NFDRO3SeJRKLI7L6XNQayDeZDVfYh1TVADlrRFs6kVYLd%2BZ9qEerw%3D%3D
+
+        }     
+    }
+}, {
+    name: 'playnext',
+    types: ['message'],
+    regex: playNextRegex,
+    action: function( chat, stanza ) {
+        let user = Client.getUser(stanza.user.id, stanza.user.username);
+        if ( user.isAdmin() || auth.has(user.id, "mod") ) {
+            let playList = runtime.brain.get("playList") || {};
+            let currentSongIndex = playList["currentSongIndex"];
+
+            console.log(currentSongIndex);
+
+            playList["currentSongIndex"] = ++currentSongIndex;
+            runtime.brain.set('playList', playList);
+            
+            console.log(currentSongIndex);
+
+            playSong(chat, stanza, currentSongIndex);
+
+            //http:\/\/www.youtubeinmp3.com\/download\/get\/?i=KVYQFjr9VHSmy5%2F0fKTYhx6WfSsS6kM73NFDRO3SeJRKLI7L6XNQayDeZDVfYh1TVADlrRFs6kVYLd%2BZ9qEerw%3D%3D
+            //http://www.youtubeinmp3.com/download/get/?i=KVYQFjr9VHSmy5%2F0fKTYhx6WfSsS6kM73NFDRO3SeJRKLI7L6XNQayDeZDVfYh1TVADlrRFs6kVYLd%2BZ9qEerw%3D%3D
+
         }     
     }
 }, {
