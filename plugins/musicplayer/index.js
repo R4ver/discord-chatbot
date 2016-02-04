@@ -7,6 +7,7 @@ const auth = require('../op/auth');
 const joinRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.join\\s(.+)$" );
 const leaveRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.leave$" );
 const playMusicRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.playmusic$" );
+const stopMusicRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.stopmusic$" );
 
 let voiceChannelObj = {};
 
@@ -60,17 +61,32 @@ module.exports = [{
         }
     }
 }, {
-    name: 'Join',
+    name: 'playmusic',
     types: ['message'],
     regex: playMusicRegex,
     action: function( chat, stanza ) {
         let user = Client.getUser(stanza.user.id, stanza.user.username);
         if ( user.isAdmin() || auth.has(user.id, "mod") ) {
             chat.client.getAudioContext({ channel: voiceChannelObj.id, stereo: true}, function(stream) {
-                stream.playAudioFile('sandstorm.mp3'); //To start playing an audio file, will stop when it's done.
+                stream.playAudioFile(__dirname + '/music/sandstorm.mp3'); //To start playing an audio file, will stop when it's done.
+                //stream.stopAudioFile(); //To stop an already playing file
+                stream.once('fileEnd', function() {
+                    chat.sendMessage('Stopped playing song.', stanza);
+                });
+            });
+        }     
+    }
+}, {
+    name: 'stopmusic',
+    types: ['message'],
+    regex: stopMusicRegex,
+    action: function( chat, stanza ) {
+        let user = Client.getUser(stanza.user.id, stanza.user.username);
+        if ( user.isAdmin() || auth.has(user.id, "mod") ) {
+            chat.client.getAudioContext({ channel: voiceChannelObj.id, stereo: true}, function(stream) {
                 stream.stopAudioFile(); //To stop an already playing file
                 stream.once('fileEnd', function() {
-                    //Do something now that file is done playing. This event only works for files.
+                    chat.sendMessage('Stopped playing song.', stanza);
                 });
             });
         }     
