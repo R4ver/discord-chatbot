@@ -7,7 +7,6 @@ const auth = require('../op/auth');
 const fetch = require('node-fetch');
 const crypto = require('crypto');
 const spawn = require('child_process').spawn;
-const terminate = require('terminate');
 const joinRegex = new RegExp( "^(\\" + runtime.prefix + ")join\\s(.+)$" );
 const leaveRegex = new RegExp( "^(\\" + runtime.prefix + ")leave$" );
 const playMusicRegex = new RegExp( "^(\\" + runtime.prefix + ")playmusic$" );
@@ -19,21 +18,50 @@ const playPrevRegex = new RegExp( "^(\\" + runtime.prefix + ")playprev$" );
 let voiceChannelObj = {};
 let ffmpeg = null;
 
-let playSong = (chat, stanza, index) => {
+let playSong = (chat, stanza, opts) => {
+    opts = opts || null;
 
     let playList = runtime.brain.get('playList');
     let currentSongIndex = playList["currentSongIndex"];
+    let pids = runtime.brain.get('pids') || {};
 
-    if ( (playList.currentSongIndex + 1) >= playList.songList.length && playList.songList[currentSongIndex].hasPlayed == true ) {
-        console.log(playList.songList.length);
-        console.log(playList.currentSongIndex);
-        console.log(playList.songList[currentSongIndex].title);
-        console.log("Got to the end");
-        return;
+    //Check if the option is next
+    if ( opts != null && opts.next ) {
+        //Check if the index is greater than the que length else increment
+        if ( playList["currentSongIndex"] > playList.songList.length ) {
+            playList["currentSongIndex"] = currentSongIndex;
+            console.log("Next was greater")             
+        } else {
+            playList["currentSongIndex"] = ++currentSongIndex;
+        }
+    
+    //Check if option is prev
+    } else if ( opts != null && opts.prev ) {
+        //Check if the index is less than 0 else decrement
+        if ( playList["currentSongIndex"] < 0 ) {
+            playList["currentSongIndex"] = 0;
+            console.log("Prev was less")             
+        } else {
+            playList["currentSongIndex"] = --currentSongIndex;
+        }
     }
 
-    chat.client.getAudioContext({ channel: voiceChannelObj.id, stereo: true}, function(stream) {
+    //Checks if the index is either greater or less than the que.
+    //This is used if no opts were given
+    if ( playList['currentSongIndex'] + 1 > playList.songList.length ) {
+        playList["currentSongIndex"] = playList.songList.length - 1;
+    } else if ( playList['currentSongIndex'] < 0 ) {
+        playList["currentSongIndex"] = 0;
+    }
 
+    runtime.brain.set('playList', playList);
+    currentSongIndex = playList['currentSongIndex'];
+
+    console.log("Song index: " + playList['currentSongIndex']);
+
+    chat.client.getAudioContext({ channel: voiceChannelObj.id, stereo: true}, function(stream) {
+        console.log("Index before fetch: " + playList['currentSongIndex']);
+        console.log("Index before fetch, currentSongIndex: " + currentSongIndex);
         fetch("http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + playList.songList[currentSongIndex].link)
             .then(function(res) {
                 return res.text();
@@ -49,32 +77,28 @@ let playSong = (chat, stanza, index) => {
                     '-ac', '2',
                     'pipe:1'
                 ], {stdio: ['pipe', 'pipe', 'ignore']});
-
-                console.log(playList.songList[currentSongIndex]);
                 
+                let pidObj = {
+                    ffmpeg_pid: ffmpeg.pid
+                };
+
+                runtime.brain.setPid(pidObj);
+
                 stream.send(ffmpeg.stdout) 
 
                 ffmpeg.stdout.on('end', function() {
-                    console.log("Song ended");
 
-                    ffmpeg.kill();
-                    ffmpeg.on('close', (code, signal) => {
-                        console.log(
-                            `child process terminated due to receipt of signal ${signal}`);
-                    });
+                    if ( ffmpeg != null ) {
+                        isPlaying(ffmpeg.pid);
 
-                    //Set the current song to hasPlayed
-                    playList.songList[currentSongIndex].hasPlayed = true;
+                        playList.next = false;
 
-                    playList['currentSongIndex'] = ++currentSongIndex
-                    //Reset hasPlayed for the new currentSongIndex
-                    playList.songList[currentSongIndex].hasPlayed = false;
-                    runtime.brain.set('playList', playList);
-            
-                    setTimeout(function() {
-                        playSong(chat, stanza);
-                        console.log("did it die?");
-                    }, 2000);            
+                        setTimeout(function() {
+                            playSong(chat, stanza, {
+                                next: true
+                            });
+                        }, 2000); 
+                    }          
                 });
             });
     });
@@ -98,7 +122,9 @@ module.exports = [{
         let playList = runtime.brain.get('playList') || {};
 
         let playListSetup = {
-            currentSongIndex: 0,
+            currentSongIndex: -1,
+            next: false,
+            prev: false,
             songList: []
         };
 
@@ -186,7 +212,6 @@ module.exports = [{
                         title: _body.title,
                         length: _body.length,
                         link: youtubeLink,
-                        hasPlayed: false,
                         isPlaying: false
                     }
 
@@ -209,9 +234,6 @@ module.exports = [{
             setTimeout(function() {
                 playSong(chat, stanza);
             }, 2000); 
-            //http:\/\/www.youtubeinmp3.com\/download\/get\/?i=KVYQFjr9VHSmy5%2F0fKTYhx6WfSsS6kM73NFDRO3SeJRKLI7L6XNQayDeZDVfYh1TVADlrRFs6kVYLd%2BZ9qEerw%3D%3D
-            //http://www.youtubeinmp3.com/download/get/?i=KVYQFjr9VHSmy5%2F0fKTYhx6WfSsS6kM73NFDRO3SeJRKLI7L6XNQayDeZDVfYh1TVADlrRFs6kVYLd%2BZ9qEerw%3D%3D
-
         }     
     }
 }, {
@@ -224,17 +246,13 @@ module.exports = [{
 
             if ( ffmpeg != null ) {
                 isPlaying(ffmpeg.pid);
+
+                setTimeout(function() {
+                    playSong(chat, stanza, {
+                        next: true
+                    });
+                }, 2000); 
             }
-
-            let playList = runtime.brain.get("playList");
-            let currentSongIndex = playList["currentSongIndex"];
-
-            playList["currentSongIndex"] = ++currentSongIndex;
-            runtime.brain.set('playList', playList);
-
-            setTimeout(function() {
-                playSong(chat, stanza);
-            }, 2000); 
         }     
     }
 }, {
@@ -247,17 +265,13 @@ module.exports = [{
 
             if ( ffmpeg != null ) {
                 isPlaying(ffmpeg.pid);
-            }
 
-            let playList = runtime.brain.get("playList");
-            let currentSongIndex = playList["currentSongIndex"];
-
-            playList["currentSongIndex"] = --currentSongIndex;
-            runtime.brain.set('playList', playList);
-
-            setTimeout(function() {
-                playSong(chat, stanza);
-            }, 2000); 
+                setTimeout(function() {
+                    playSong(chat, stanza, {
+                        prev: true
+                    });
+                }, 2000);
+            } 
         }    
     }
 }, {

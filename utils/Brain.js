@@ -16,6 +16,10 @@ class Brain {
     static set( key, value ) {
         brain.setItemSync( key, value );
     }
+
+    static setPid( value ) {
+        brain.setItemSync('pids', value);
+    }
 };
 
 module.exports = Brain;
