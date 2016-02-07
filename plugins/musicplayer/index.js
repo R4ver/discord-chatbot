@@ -5,6 +5,7 @@ const runtime           = require('../../utils/Runtime');
 const Client            = require('../../utils/Client');
 const fetch             = require('node-fetch');
 const Log               = require('../../utils/Log');
+const auth              = require('../op/auth');
 const joinRegex         = new RegExp( "^(\\" + runtime.prefix + ")join\\s(.+)$" );
 const leaveRegex        = new RegExp( "^(\\" + runtime.prefix + ")leave$" );
 const playMusicRegex    = new RegExp( "^(\\" + runtime.prefix + ")playmusic$" );
@@ -19,6 +20,7 @@ let player = new Player();
 module.exports = [{
     types: ['startup'],
     action: function( chat ) {
+        //Check if the brain for the playlist already exist, else create it
         if ( runtime.brain.get('playList') === null ) {
 
             let playListSetup = {
@@ -58,11 +60,8 @@ module.exports = [{
                 return;
             }
 
-            //Check if the songIndex it greater than or equal to the length of the songList
-            if ( playList.currentSongIndex + 1 > playList.songList.length || playList.currentSongIndex + 1 == playList.songList.length ) {
-                playList.currentSongIndex = playList.songList.length - 1;
-                runtime.brain.set('playList', playList);
-            }
+            //Kill ffmpeg instance if running
+            player.killMusic();
 
             //Get the current songIndex
             let songIndex = playList.currentSongIndex;
@@ -70,6 +69,10 @@ module.exports = [{
             chat.client.getAudioContext({ channel: playList.currentVoiceChannel, stereo: true}, function(stream) {
                 //Start the music
                 player.playMusic(playList.songList[songIndex].songId, stream);
+
+                playList.isPlaying = true;
+                runtime.brain.set('playList', playList);
+
                 //Give the channel information about the currently playing song.
                 chat.sendMessage("Now playing: " + playList.songList[songIndex].title, stanza);
             });
@@ -82,6 +85,11 @@ module.exports = [{
     action: function( chat, stanza ) {
         let user = Client.getUser(stanza.user.id, stanza.user.username);
         if ( user.isAdmin() || auth.has(user.id, "mod") ) {
+            let playList = runtime.brain.get('playList');
+            //Set the playList.isPlaying to false
+            playList.isPlaying = false;
+            runtime.brain.set('playList', playList);
+
             player.killMusic();
         }
     }
@@ -92,31 +100,32 @@ module.exports = [{
     action: function( chat, stanza ) {
         let user = Client.getUser(stanza.user.id, stanza.user.username);
         if ( user.isAdmin() || auth.has(user.id, "mod") ) {
-            player.killMusic();
-
             //Get the playList
             let playList = runtime.brain.get('playList');
 
+            if ( !playList.isPlaying )
+                return; 
+
+            player.killMusic();
+
+
+            //Check if the songIndex it greater than or equal to the length of the songList
+            if ( player.checkIndex() ) {
+                console.log("Got to the end");
+                console.log(player.checkIndex());
+
+                playList.isPlaying = false;
+                runtime.brain.set('playList', playList);
+
+                chat.sendMessage("No more songs", stanza);
+                return;
+            }
 
             //Increment the currentSongIndex
             playList.currentSongIndex = playList.currentSongIndex + 1;
 
             //Save the new index to the playList
             runtime.brain.set('playList', playList);
-
-            //Check if the songIndex it greater than or equal to the length of the songList
-            if ( playList.currentSongIndex + 1 > playList.songList.length ) {
-
-                if ( playList.currentSongIndex + 1 == playList.songList.length ) {
-                    playList.currentSongIndex = playList.currentSongIndex - 1;
-                    runtime.brain.set('playList', playList);
-                    chat.sendMessage("No more songs", stanza);
-                    return;
-                }
-
-                chat.sendMessage("No more songs", stanza);
-                return
-            }
 
             //Get the songIndex
             let songIndex = playList.currentSongIndex;
@@ -154,19 +163,23 @@ module.exports = [{
                 }).then(function(body) {
                     let _body = JSON.parse(body);
 
+                    //If the body return no video. end
                     if ( _body.error == 'no video' ) {
                         console.error('Error: Link contained no video');
                         chat.sendMessage("Link ")
                         return
                     }
 
+                    //Create the new track
                     let newTrack = {
                         title: _body.title,
                         length: _body.length,
                         songId: youtubeId
                     }
 
+                    //Push the new track to the songList
                     playList[ "songList" ].push(newTrack);
+                    //Save the playList
                     runtime.brain.set("playList", playList);
                 });
         }     

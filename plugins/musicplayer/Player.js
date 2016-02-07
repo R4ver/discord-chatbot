@@ -29,17 +29,22 @@ class Player {
 
     checkIndex() {
         //Check if the songIndex it greater than or equal to the length of the songList
-        if ( playList.currentSongIndex + 1 > playList.songList.length ) {
+        if( this.playList.currentSongIndex + 1 > this.playList.songList.length ) {
+            console.log("The index was greater" + this.playList.currentSongIndex);
+            this.playList.currentSongIndex = this.playList.songList.length - 1;
 
-            if ( playList.currentSongIndex + 1 == playList.songList.length ) {
-                playList.currentSongIndex = playList.currentSongIndex - 1;
-                runtime.brain.set('playList', playList);
-                chat.sendMessage("No more songs", stanza);
-                return;
-            }
+            console.log('The index was greater than or equal');
+            return true;
+        }
 
-            chat.sendMessage("No more songs", stanza);
-            return
+        runtime.brain.set('playList', this.playList);
+
+        if ( this.playList.currentSongIndex + 1 == this.playList.songList.length ) {
+            console.log("The index was greater" + this.playList.currentSongIndex);
+            this.playList.currentSongIndex = this.playList.songList.length - 1;
+            runtime.brain.set('playList', this.playList);
+
+            return false;
         }
     }
 
@@ -50,10 +55,13 @@ class Player {
         this.playList.currentChannelName = '';
 
         //Save the playList
-        runtime.brain.set('playList', playList);
+        runtime.brain.set('playList', this.playList);
     }
 
     killMusic() {
+        if ( ffmpeg == null )
+            return;
+
         ffmpeg.kill();
         ffmpeg.on('close', (code, signal) => {
             console.log(
