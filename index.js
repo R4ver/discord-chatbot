@@ -4,6 +4,8 @@
  * Discord chatbot
  */
 
+//forever -o chatbot_out.log -e chatbot_err.log start -m5 index.js
+
 const credentials = require('./setup/custom/credentials');
 const Brain = require('./utils/Brain');
 const ChatBot = require('./utils/Chatbot');

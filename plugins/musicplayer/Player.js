@@ -24,6 +24,8 @@ class Player {
             'pipe:1'
         ], {stdio: ['pipe', 'pipe', 'ignore']});
 
+        ffmpeg.setFfmpegPath("~/ffmpeg_sources/ffmpeg/");
+
         return ffmpeg;
     }
 
