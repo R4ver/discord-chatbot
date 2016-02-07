@@ -24,7 +24,8 @@ class Player {
             'pipe:1'
         ], {stdio: ['pipe', 'pipe', 'ignore']});
 
-        ffmpeg.setFfmpegPath("~/ffmpeg_sources/ffmpeg/");
+        console.log("THIS IS FFMPEG");
+        console.log(ffmpeg);
 
         return ffmpeg;
     }
