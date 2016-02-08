@@ -76,6 +76,8 @@ class Player {
     }
 
     playMusic(songId, stream) {
+        console.log("I AM USING THE FILE FFMPEG IS SHIT");
+
         fetch("http://www.youtubeinmp3.com/fetch/?format=JSON&video=http://www.youtube.com/watch?v=" + songId)
             .then(function(res) {
                 return res.text();
