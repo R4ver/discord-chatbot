@@ -70,7 +70,7 @@ module.exports = [{
                 //Start the music
                 player.playMusic(playList.songList[songIndex].songId, stream);
 
-                //playList.isPlaying = true;
+                playList.isPlaying = true;
                 runtime.brain.set('playList', playList);
 
                 //Give the channel information about the currently playing song.
