@@ -162,12 +162,11 @@ module.exports = [{
                     return res.text();
                 }).then(function(body) {
                     let _body = JSON.parse(body);
-                    console.log("This is error" + _body.error);
-                    console.log(_body.error);
+                    console.error("Add song error: " + _body.error);
                     //If the body return no video. end
                     if ( _body.error == 'no video' ) {
                         console.error('Error: Link contained no video');
-                        chat.sendMessage("Link ")
+                        chat.sendMessage("Error: Link contained no video", stanza);
                         return
                     }
 
