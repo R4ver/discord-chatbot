@@ -2,7 +2,7 @@
 
 const runtime = require('../utils/Runtime');
 const Client = require("../utils/Client");
-const regex = new RegExp( /^hello$/ );
+const regex = new RegExp( /^(hello|hey|sup|hi)$/ );
 
 module.exports = [{
     name: 'hello guys',
