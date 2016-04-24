@@ -41,7 +41,7 @@ module.exports = [{
                 bio = '';
             }
 
-            chat.sendMessage(`${user.html_url}` + "\n```" + `
+            chat.sendMessage(`${user.html_url}
 Username: ${user.login}
 Joined: ${created_at}
 Repos: ${user.public_repos}
@@ -49,7 +49,7 @@ Followers: ${user.followers}
 Following: ${user.following}
 
 ${bio}
-            ` + "```", stanza)
+`, stanza)
         });
     }
 }];

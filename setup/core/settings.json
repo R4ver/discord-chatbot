@@ -3,6 +3,7 @@
     "coreCommands" : {
         "admin": true,
         "info": true,
-        "presence": true
+        "presence": true,
+        "insult": true
     }
 }

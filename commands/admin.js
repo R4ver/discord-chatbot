@@ -1,7 +1,8 @@
 'use strict'
 
 const runtime = require('../utils/Runtime');
-const regex = new RegExp( /^hello guys$/ );
+const Client = require("../utils/Client");
+const regex = new RegExp( /^hello$/ );
 
 module.exports = [{
     name: 'hello guys',
@@ -10,11 +11,11 @@ module.exports = [{
     action: function( chat, stanza ) {
         let rawEvent = stanza.rawEvent;
 
-        let userID = rawEvent.userID.userID;
-        let adminName = stanza.user.username;
+        let userID = rawEvent.userID;
+        let user = Client.getUser(stanza.user.id, stanza.user.username);
 
-        if ( userID == runtime.credentials.admin ) {
-            chat.sendMessage(runtime.credentials.channel, "Welcome my lord, <@" + userID + "> !")
+        if ( user.isAdmin() || auth.has(user.id, "admin") ) {
+            chat.sendMessage(`Welcome my lord, <@${userID}> !`, stanza);
         }
     }
 }]; 
