@@ -1,7 +1,7 @@
 'use strict'
 
 const runtime = require('../../utils/Runtime');
-const regex = new RegExp( /^(~)rules$/ );
+const regex = new RegExp( /^(~)kiandy rules$/ );
 
 const rules = `
 **Common rules on the server**
