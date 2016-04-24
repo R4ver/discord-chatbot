@@ -1,6 +1,7 @@
 {
-    "prefix": "$",
+    "prefix": "~",
     "coreCommands" : {
+        "admin": true,
         "info": true,
         "presence": true
     }

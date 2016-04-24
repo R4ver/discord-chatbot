@@ -41,7 +41,7 @@ class Client {
         });
 
         this.client.setPresence({
-            game: "Boku no Pico: Online"    
+            game: "with cat girls"    
         });
     }
 
@@ -141,7 +141,7 @@ class Client {
         if ( runtime.debug ) {
             Log.log('DEBUGGING: ' + message);
             return false;
-        }
+        };
 
         let receiver = stanza.rawEvent.channelID;
 

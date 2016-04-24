@@ -2,10 +2,10 @@
 
 const runtime = require('../utils/Runtime');
 const fs = require("fs");
-const regex = new RegExp( /^(>)info/ );
+const regex = new RegExp( /^(~)info$/ );
 
 module.exports = [{
-    name: '!ping',
+    name: 'info',
     types: ['message'],
     regex: regex,
     action: function( chat, stanza ) {

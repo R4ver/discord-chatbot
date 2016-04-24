@@ -1,8 +1,12 @@
 {
     "opLevels": { 
+        "admin" : {
+            "name": "Admin",
+            "weight": 100
+        },
         "mod" : { 
             "name": "Moderator", 
-            "weight": 100 
+            "weight": 90 
         }, 
 
         "vip" : { 

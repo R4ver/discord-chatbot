@@ -24,9 +24,6 @@ class Player {
             'pipe:1'
         ], {stdio: ['pipe', 'pipe', 'ignore']});
 
-        console.log("THIS IS FFMPEG");
-        console.log(ffmpeg);
-
         return ffmpeg;
     }
 
@@ -84,9 +81,6 @@ class Player {
             }).then(function(body) {
                 let _body = JSON.parse(body);
                 let musicStream = Player.createStream(_body.link);
-
-                console.log("THIS IS MUSICSTREAM");
-                console.log(musicStream);
 
                 //Start the music stream
                 stream.send(musicStream.stdout);

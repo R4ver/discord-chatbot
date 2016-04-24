@@ -101,7 +101,6 @@ class ChatBot {
             var regexMatched =  command.regex && command.regex.test( parsedMessage.message.toLowerCase() );
             var ignoreRateLimiting = command.ignoreRateLimiting;
             var passesRateLimiting = !parsedMessage.rateLimited || ( parsedMessage.rateLimited && ignoreRateLimiting );
-
             if ( regexMatched && passesRateLimiting ) {
                 command.action( chat, parsedMessage );
 

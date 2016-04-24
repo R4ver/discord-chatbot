@@ -4,20 +4,23 @@
 
 **I was made by:** R[4]ver
 
+**Prefix:** ~
+
 **His Github is:** https://github.com/RavingAPD
 
-**Version:** 0.8.0
+**Version:** 1.1.0
 
 **Framework used:** Discord.io - NodeJS
 
 **Commands:**
 
-    **>info** => Shows this message.
-    **>op {@username} {#rank}**  => **[ADMIN ONLY]** Sets a specific rank for a user.
-    **>rank | >rank {@username}** => Show either your rank or if given a username, shows their rank.
-    **>gitstats {github username}** => Shows information about the github user.
-    **>bot join {voice channel}** => Makes the bot join a voice channel. Can only be used by rank: *mod* at the moment.
-    **>bot leave** => Makes the bot leave the currently connected voice channel. Can only be used by rank: *mod* at the moment.
+    info => Shows this message.
+    rank | rank {@username} => Show either your rank or if given a username, shows their rank.
+    gitstats {github username} => Shows information about the github user.
+
+**Commands specific for Kiandymundi's Server**
+    
+    rules => Sends private message about basic rules on the server
 
 ```markdown
 # Information end #

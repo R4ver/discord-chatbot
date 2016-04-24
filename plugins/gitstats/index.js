@@ -4,7 +4,7 @@ const runtime = require('../../utils/Runtime');
 const Client = require('../../utils/Client');
 const Github = require('github-api');
 const gc = require('./credentials');
-const regex = new RegExp( /^(>)gitstats\s(.+)$/ );
+const regex = new RegExp( /^(~)gitstats\s(.+)$/ );
 
 //Create new Github instance
 let github = new Github({
