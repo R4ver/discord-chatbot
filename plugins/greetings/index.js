@@ -8,11 +8,15 @@ const regex = new RegExp( /^(hello|hi|sup|hello guys|whats up|what's up|hi guys)
 
 const greetings = {
     "mod": [
-        "Welcome friend."
+        "Welcome! :D",
+        "Hi there! You lovely thing!",
+        "Yes! You're back! <3"
     ],
 
     "vip": [
-        "Welcome fam."
+        "Welcome fam",
+        "Hello there, special!",
+        "Hi, how's life?"
     ],
 
     "donator": [
