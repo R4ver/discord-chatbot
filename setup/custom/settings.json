@@ -4,6 +4,7 @@
         "rebelobot": false,
         "gitstats": true,
         "musicplayer": false,
-        "kiandy-rules": true
+        "kiandy-rules": true,
+        "greetings": true
     }
 }

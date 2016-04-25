@@ -34,6 +34,6 @@ module.exports = {
 
         if ( userWeight >= opWeight ) {
             return true;
-        }
+        } 
     }
 }

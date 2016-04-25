@@ -2,6 +2,7 @@
 
 const runtime = require('../utils/Runtime');
 const Client = require("../utils/Client");
+const auth = require("../plugins/op/auth");
 const regex = new RegExp( /^(hello|hey|sup|hi)$/ );
 
 module.exports = [{
@@ -16,6 +17,8 @@ module.exports = [{
 
         if ( user.isAdmin() || auth.has(user.id, "admin") ) {
             chat.sendMessage(`Welcome my lord, <@${userID}> !`, stanza);
+        } else if ( auth.has(userID, "mod") ) {
+            chat.sendMessage(`Welcome my friend, <@${userID}> !`, stanza);
         }
     }
 }]; 
