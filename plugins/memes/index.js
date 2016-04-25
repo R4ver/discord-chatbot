@@ -9,6 +9,6 @@ module.exports = [{
     types: ['message'],
     regex: goinsleepRegex,
     action: function( chat, stanza ) {
-        chat.sendMessage("I  W A N T  T O  G O  I N  M Y  S L E E P ! ! ! ");
+        chat.sendMessage("I  W A N T  T O  G O  I N  M Y  S L E E P ! ! ! ", stanza);
     }
 }];
