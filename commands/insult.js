@@ -14,6 +14,7 @@ module.exports = [{
     types: ['message'],
     regex: regex,
     action: function( chat, stanza ) {
+        console.log("I'm trying to insult");
         let match = regex.exec( stanza.message );
         let user = match[2];
         let mention = stanza.rawEvent.d.mentions[0];
