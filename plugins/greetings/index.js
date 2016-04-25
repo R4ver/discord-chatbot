@@ -32,8 +32,8 @@ module.exports = [{
     types: ['message'],
     regex: regex,
     action: function( chat, stanza ) {
-        let userID = rawEvent.userID;
         let rawEvent = stanza.rawEvent;
+        let userID = rawEvent.userID;
         
         if ( auth.has(userID, 'admin') ) {
             console.log("Admins has own greetings standard");
