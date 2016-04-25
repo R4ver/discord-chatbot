@@ -17,8 +17,6 @@ module.exports = [{
 
         if ( user.isAdmin() || auth.has(user.id, "admin") ) {
             chat.sendMessage(`Welcome my lord, <@${userID}> !`, stanza);
-        } else if ( auth.has(userID, "mod") ) {
-            chat.sendMessage(`Welcome my friend, <@${userID}> !`, stanza);
         }
     }
 }]; 
