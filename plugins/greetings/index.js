@@ -32,12 +32,18 @@ module.exports = [{
     types: ['message'],
     regex: regex,
     action: function( chat, stanza ) {
+        let userID = rawEvent.userID;
+        
+        if ( auth.has(userID, 'admin') ) {
+            console.log("Admins has own greetings standard");
+            return;
+        }
+
         console.log("USING THE LOCAL BOT");
 
         //get the info about the users
         let rawEvent = stanza.rawEvent;
 
-        let userID = rawEvent.userID;
         console.log(userID);
 
         for ( let ranks in greetings ) {
