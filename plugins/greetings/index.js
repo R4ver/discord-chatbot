@@ -7,10 +7,6 @@ const regex = new RegExp( /^(hello|hi|sup|hello guys|whats up|what's up|hi guys)
 //Different greetings based on rank
 
 const greetings = {
-    "admin": [
-        "Welcome my lord"
-    ],
-
     "mod": [
         "Welcome friend."
     ],
