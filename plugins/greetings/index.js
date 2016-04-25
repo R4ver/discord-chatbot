@@ -33,6 +33,7 @@ module.exports = [{
     regex: regex,
     action: function( chat, stanza ) {
         let userID = rawEvent.userID;
+        let rawEvent = stanza.rawEvent;
         
         if ( auth.has(userID, 'admin') ) {
             console.log("Admins has own greetings standard");
@@ -42,7 +43,6 @@ module.exports = [{
         console.log("USING THE LOCAL BOT");
 
         //get the info about the users
-        let rawEvent = stanza.rawEvent;
 
         console.log(userID);
 
