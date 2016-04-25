@@ -18,7 +18,6 @@ class Client {
         // Connect to the server
         this.client = new DiscordClient({
             autorun: true,
-            email: credentials.email,
             token: credentials.token 
         });
 

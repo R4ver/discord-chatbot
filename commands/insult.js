@@ -14,10 +14,17 @@ module.exports = [{
     types: ['message'],
     regex: regex,
     action: function( chat, stanza ) {
-        console.log("I'm trying to insult");
         let match = regex.exec( stanza.message );
-        let user = match[2];
+        let user = stanza.rawEvent.d.author.id;
         let mention = stanza.rawEvent.d.mentions[0];
+
+        let adminID = runtime.credentials.admin;
+
+        //Make sure people can't insult admin
+        if ( mention.id == adminID ) {
+            chat.sendMessage(`I'm not gonna insult my master. Fuck you <@${user}>!`, stanza);
+            return;
+        }
 
         //make random number
         let randomNumber = Math.floor(Math.random() * insults.length);
