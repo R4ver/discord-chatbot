@@ -35,7 +35,7 @@ module.exports = [{
     regex: brainPowerRegex,
     action: function( chat, stanza ) {
         //Get the regex text
-        let match = brainPowerRegex.exec( stanza.message );
+        let match = brainPowerRegex.exec( stanza.message ).toLowerCase();
         console.log(match[0]);
 
         if ( match[0] == "~power" ) {
