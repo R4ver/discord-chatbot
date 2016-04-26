@@ -38,7 +38,7 @@ module.exports = [{
     action: function( chat, stanza ) {
         let rawEvent = stanza.rawEvent;
         let userID = rawEvent.userID;
-        
+
         if ( auth.has(userID, 'admin') ) {
             console.log("Admins has own greetings standard");
             return;
@@ -46,7 +46,6 @@ module.exports = [{
 
         for ( let ranks in greetings ) {
             let keys = Object.keys(greetings);
-
             if ( auth.has(userID, ranks) ) {
                 let randomNumber = Math.floor(Math.random() * greetings[ranks].length);
 
