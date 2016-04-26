@@ -7,7 +7,7 @@ const regex = new RegExp( /^(hello|hi|sup|hello guys|whats up|what's up|hi guys)
 //Different greetings based on rank
 
 const greetings = {
-    "mod": [
+    "moderator": [
         "Welcome! :D",
         "Hi there! You lovely thing!",
         "Yes! You're back! <3"
@@ -43,12 +43,6 @@ module.exports = [{
             console.log("Admins has own greetings standard");
             return;
         }
-
-        console.log("USING THE LOCAL BOT");
-
-        //get the info about the users
-
-        console.log(userID);
 
         for ( let ranks in greetings ) {
             let keys = Object.keys(greetings);
