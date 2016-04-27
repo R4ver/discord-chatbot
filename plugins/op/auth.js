@@ -32,6 +32,11 @@ module.exports = {
         var userWeight = settings.opLevels[userLvl].weight;
         var opWeight = settings.opLevels[lvl].weight;
 
+        if ( OP[stanza] == undefined ) {
+            console.log("User doesn't have a rank at all");
+            return;
+        }
+
         if ( userWeight >= opWeight ) {
             return true;
         } 
