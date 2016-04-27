@@ -8,7 +8,7 @@ const rules = `
 
 **Don't** promote other Discord servers. Send people a DM (Direct Message) instead.
 
-Keep links, images etc. in the #pics-vids-links-go-here.
+Keep links, images etc. in the #pics-vids-here.
 
 Be nice to all the faggots here. kys and gg wp reported :)
 `

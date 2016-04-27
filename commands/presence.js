@@ -1,13 +1,19 @@
 'use strict'
 
 const runtime = require('../utils/Runtime');
-const playRegex = new RegExp( "^(\\" + runtime.prefix + ")bot.play\\s(.+)$" );
+const auth = require('../plugins/op/auth');
+const playRegex = new RegExp( /^(~)bot.play\\s(.+)$/ );
 
 module.exports = [{
     name: 'presence',
     types: ['message'],
     regex: playRegex,
     action: function( chat, stanza ) {
+        if ( !auth.has(stanza.rawEvent.userID, 'moderator') ) {
+            console.log('User does not have high enough rank');
+            return;
+        }
+
         let match = playRegex.exec( stanza.message );
         let game = match[2];
 
