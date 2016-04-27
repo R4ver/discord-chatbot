@@ -19,10 +19,14 @@ module.exports = [{
         let mention = stanza.rawEvent.d.mentions[0];
 
         let adminID = runtime.credentials.admin;
+        let botID = runtime.credentials.botID;
 
         //Make sure people can't insult admin
         if ( mention.id == adminID ) {
             chat.sendMessage(`I'm not gonna insult my master. Fuck you <@${user}>!`, stanza);
+            return;
+        } else if ( mention.id == botID ) {
+            chat.sendMessage(`Now that would be silly. Don't you think <@${user}>?`, stanza);
             return;
         }
 
