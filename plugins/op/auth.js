@@ -28,14 +28,17 @@ module.exports = {
      */
     has: function(stanza, lvl) {
         var OP = runtime.brain.get("chatOPS") || {};
-        var userLvl = OP[stanza].opLvl.toLowerCase();
-        var userWeight = settings.opLevels[userLvl].weight;
-        var opWeight = settings.opLevels[lvl].weight;
-
+        
+        //Check if user exists in the rank system
         if ( OP[stanza] == undefined ) {
             console.log("User doesn't have a rank at all");
             return;
         }
+
+        var userLvl = OP[stanza].opLvl.toLowerCase();
+        var userWeight = settings.opLevels[userLvl].weight;
+        var opWeight = settings.opLevels[lvl].weight;
+
 
         if ( userWeight >= opWeight ) {
             return true;
