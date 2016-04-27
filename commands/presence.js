@@ -2,7 +2,7 @@
 
 const runtime = require('../utils/Runtime');
 const auth = require('../plugins/op/auth');
-const playRegex = new RegExp( /^(~)bot.play\\s(.+)$/ );
+const playRegex = new RegExp( /^(~)bot.play\s(.+)$/ );
 
 module.exports = [{
     name: 'presence',

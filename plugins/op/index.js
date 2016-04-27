@@ -9,7 +9,7 @@ let createOpRegex = new RegExp( /^(~)op\s\<@((\d)+)>\s\#((\w|\d)+)$/ ); //\s(\w|
 let otherUserRank = new RegExp( /^(~)rank\s\<@(\d+)>$/ );
 
 module.exports = [{
-    name: '!op {@username} {#Lvl}',
+    name: 'op {@username} {#Lvl}',
     types: ['message'],
     regex: createOpRegex,
     action: function( chat, stanza ) {
@@ -21,7 +21,7 @@ module.exports = [{
 
         //If the user is the streamer or has a lvl of mod they will
         //be able to op a specific user from the chat 
-        if ( user.isAdmin() || auth.has(user.id, "mod") ) {
+        if ( user.isAdmin() || auth.has(user.id, "moderator") ) {
             let opLevels = settings.opLevels;
 
             //Get the regex groups
