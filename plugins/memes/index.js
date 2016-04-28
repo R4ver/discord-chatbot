@@ -6,6 +6,7 @@ const goinsleepRegex = new RegExp( /^(~)gosl$/ );
 const h3h3Regex = new RegExp( /^(h3h3|ethan|bradberry)$/ );
 const brainPowerRegex = new RegExp( /^(brain|power|brain power|~power)$/ );
 const wakeUpRegex = new RegExp( /^(wake me up|wake me up inside|save me)$/ );
+const awpRegex = new RegExp ( /^(~)awp$/ );
 
 module.exports = [{
     name: 'I want to go in my sleep',
@@ -69,5 +70,20 @@ module.exports = [{
         } else if ( match[0] == "save me" ) {
             chat.sendMessage(`CALL MY NAME AND SAVE ME FROM THE DARK`, stanza);
         }
+    }
+},{
+    name: 'AH WAH PAY',
+    types: ['message'],
+    regex: awpRegex,
+    action: function( chat, stanza ) {
+        let messages = [
+            "AH WAH PAY",
+            "#AHWAHPAY",
+            "RIP MOMAJOE126"
+        ];
+
+        let randomNumber = Math.floor(Math.random() * messages.length);
+
+        chat.sendMessage(`${messages[randomNumber]}`, stanza);
     }
 }];
