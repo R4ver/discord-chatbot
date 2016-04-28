@@ -5,6 +5,7 @@ const auth = require('../op/auth');
 const goinsleepRegex = new RegExp( /^(~)gosl$/ );
 const h3h3Regex = new RegExp( /^(h3h3|ethan|bradberry)$/ );
 const brainPowerRegex = new RegExp( /^(brain|power|brain power|~power)$/ );
+const wakeUpRegex = new RegExp( /^(wake me up)/ );
 
 module.exports = [{
     name: 'I want to go in my sleep',
@@ -48,6 +49,23 @@ module.exports = [{
             chat.sendMessage(`Power?\n\n\nBrain Power!?`, stanza);
         } else if ( match[0] == "brain power" ) {
             chat.sendMessage(`***O-OOOOOOOOOO AAAAE-A-A-I-A-U- JO-OOOOOOOOOO AAE-O-A-A-U-U-A- E-EEE-EE-EEE AAAAE-A-E-I-E-A- JO-OOO-OO-OO-OO***`, stanza);
+        }
+    }
+},{
+    name: 'wake me up',
+    types: ['message'],
+    regex: wakeUpRegex,
+    action: function( chat, stanza ) {
+        //Get the regex text
+        
+        let message = stanza.message.toLowerCase();
+        let match = wakeUpRegex.exec( message );
+        console.log(match[0]);
+
+        if ( match[0] == "wake me up" ) {
+            chat.sendMessage(`WAKE ME UP INSIDE`, stanza);
+        } else if ( match[0] == "wake me up inside" ) {
+            chat.sendMessage(`SAVE ME`, stanza);
         }
     }
 }];
