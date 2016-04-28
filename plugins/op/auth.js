@@ -1,6 +1,7 @@
 "use strict";
 
 var runtime = require("../../utils/Runtime");
+var Client = require('../../utils/Client');
 var settings = require("./settings");
 
 module.exports = {
@@ -9,12 +10,12 @@ module.exports = {
      * @param  {user}
      * @return {true|false}
      */
-    isOpped: function(stanza) {
+    isOpped: function(userID) {
         var OP = runtime.brain.get("chatOPS") || {};
-        var opID = OP[stanza];
+        var opID = OP[userID];
 
         if ( opID !== undefined ) {
-            if ( stanza === opID.oppedUser ) {
+            if ( userID === opID.oppedUser ) {
                 return true;
             }
         }
@@ -27,21 +28,24 @@ module.exports = {
      * @return {true|false}
      */
     has: function(stanza, lvl) {
-        var OP = runtime.brain.get("chatOPS") || {};
-        
-        //Check if user exists in the rank system
-        if ( OP[stanza] == undefined ) {
+        let userID = stanza.rawEvent.userID;
+        let OP = runtime.brain.get("chatOPS") || {};
+
+        //Check if user exists in the rank system.
+        if ( OP[userID] == undefined ) {
             console.log("User doesn't have a rank at all");
             return;
         }
 
-        var userLvl = OP[stanza].opLvl.toLowerCase();
-        var userWeight = settings.opLevels[userLvl].weight;
-        var opWeight = settings.opLevels[lvl].weight;
+        let userLvl = OP[userID].opLvl.toLowerCase();
+        let userWeight = settings.opLevels[userLvl].weight;
+        let opWeight = settings.opLevels[lvl].weight;
 
 
         if ( userWeight >= opWeight ) {
             return true;
-        } 
+        } else {
+            Client.sendMessage(`I'm sorry, <@${userID}>. You don't have the right rank for this command.`, stanza);
+        }
     }
 }

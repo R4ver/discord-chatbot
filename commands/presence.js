@@ -9,7 +9,7 @@ module.exports = [{
     types: ['message'],
     regex: playRegex,
     action: function( chat, stanza ) {
-        if ( !auth.has(stanza.rawEvent.userID, 'moderator') ) {
+        if ( !auth.has(stanza, 'moderator') ) {
             console.log('User does not have high enough rank');
             return;
         }

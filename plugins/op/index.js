@@ -21,7 +21,7 @@ module.exports = [{
 
         //If the user is the streamer or has a lvl of mod they will
         //be able to op a specific user from the chat 
-        if ( user.isAdmin() || auth.has(user.id, "moderator") ) {
+        if ( user.isAdmin() || auth.has(stanza, "moderator") ) {
             let opLevels = settings.opLevels;
 
             //Get the regex groups

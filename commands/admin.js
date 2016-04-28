@@ -15,7 +15,7 @@ module.exports = [{
         let userID = rawEvent.userID;
         let user = Client.getUser(stanza.user.id, stanza.user.username);
 
-        if ( user.isAdmin() || auth.has(user.id, "admin") ) {
+        if ( user.isAdmin() || auth.has(stanza, "admin") ) {
             chat.sendMessage(`Welcome my lord, <@${userID}> !`, stanza);
         }
     }
