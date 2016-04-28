@@ -45,7 +45,7 @@ module.exports = {
         if ( userWeight >= opWeight ) {
             return true;
         } else {
-            Client.sendMessage(`I'm sorry, <@${userID}>. You don't have the right rank for this command.`, stanza);
+            //User is not high enough rank.
         }
     }
 }

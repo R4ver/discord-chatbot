@@ -2,11 +2,14 @@
 
 const runtime = require('../../utils/Runtime');
 const auth = require('../op/auth');
+
 const goinsleepRegex = new RegExp( /^(~)gosl$/ );
 const h3h3Regex = new RegExp( /^(h3h3|ethan|bradberry)$/ );
 const brainPowerRegex = new RegExp( /^(brain|power|brain power|~power)$/ );
 const wakeUpRegex = new RegExp( /^(wake me up|wake me up inside|save me)$/ );
-const awpRegex = new RegExp ( /^(~)awp$/ );
+const awpRegex = new RegExp( /^(~)awp$/ );
+const addMemeRegex = new RegExp( /^(~)meme\.add\smeme=(.+)\sregex=(.+)$/ );
+const runMemeRegex = new RegExp ( /(.+)$/ );
 
 module.exports = [{
     name: 'I want to go in my sleep',
@@ -85,5 +88,68 @@ module.exports = [{
         let randomNumber = Math.floor(Math.random() * messages.length);
 
         chat.sendMessage(`${messages[randomNumber]}`, stanza);
+    }
+},{
+    name: 'Add meme',
+    types: ['message'],
+    regex: addMemeRegex,
+    action: function( chat, stanza ) {
+        if ( !auth.has(stanza, 'moderator') ) {
+            console.log("Is not high enough rank");
+            return;
+        }
+
+        //Get the regex content
+        let message = stanza.message.toLowerCase();
+        let match = addMemeRegex.exec( message );
+
+        //Get the meme
+        let meme = match[2];
+
+        //Get regex
+        let regex = match[3];
+
+        //Get the brain
+        let memeDB = runtime.brain.get('memeDB') || {};
+        let newMemeID = Object.keys(memeDB).length + 1;
+
+        console.log(regex)
+
+        //First check if Regex matches any existing regex
+        for ( let dbRegex in memeDB ) {
+            let key = memeDB[dbRegex];
+
+            if ( regex === key.regex ) {
+                chat.sendMessage("`Sorry, a command already uses that regex`", stanza);
+                return;
+            }
+        }
+
+        console.log("The regex from outside: ", regex);
+
+        if ( memeDB[newMemeID] === undefined ) {
+            console.log("The regex is: ", regex);
+
+            memeDB[newMemeID] = {
+                id: newMemeID,
+                meme: meme,
+                regex: regex
+            };
+
+            runtime.brain.set("memeDB", memeDB);
+
+            chat.sendMessage(`Added meme: ${meme}\nUse: ${regex} to use the meme`, stanza);
+        }
+    }
+},{
+    name: 'Run meme',
+    types: ['message'],
+    regex: runMemeRegex,
+    action: function( chat, stanza ) {
+        //Get the regex content
+        let message = stanza.message.toLowerCase();
+        let match = runMemeRegex.exec( message );
+
+        let meme = match[2];
     }
 }];

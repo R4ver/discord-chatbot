@@ -36,27 +36,19 @@ module.exports = [{
     types: ['message'],
     regex: regex,
     action: function( chat, stanza ) {
-        let rawEvent = stanza.rawEvent;
-        let userID = rawEvent.userID;
-
-        if ( auth.has(userID, 'admin') ) {
+        if ( auth.has(stanza, 'admin') ) {
             console.log("Admins has own greetings standard");
             return;
         }
 
         for ( let ranks in greetings ) {
             let keys = Object.keys(greetings);
-            if ( auth.has(userID, ranks) ) {
+            if ( auth.has(stanza, ranks) ) {
                 let randomNumber = Math.floor(Math.random() * greetings[ranks].length);
 
                 chat.sendMessage(greetings[ranks][randomNumber], stanza);
                 return;
             }
         }
-
-        //Check if user is potato
-        // if ( auth.has(userID, "potato") ) {
-        //     chat.sendMessage(potatoGreetings[randomNumber], stanza);
-        // }
     }
 }];
