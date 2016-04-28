@@ -5,7 +5,7 @@ const auth = require('../op/auth');
 const goinsleepRegex = new RegExp( /^(~)gosl$/ );
 const h3h3Regex = new RegExp( /^(h3h3|ethan|bradberry)$/ );
 const brainPowerRegex = new RegExp( /^(brain|power|brain power|~power)$/ );
-const wakeUpRegex = new RegExp( /^(wake me up)$/ );
+const wakeUpRegex = new RegExp( /^(wake me up|wake me up inside|save me)$/ );
 
 module.exports = [{
     name: 'I want to go in my sleep',
@@ -66,6 +66,8 @@ module.exports = [{
             chat.sendMessage(`WAKE ME UP INSIDE`, stanza);
         } else if ( match[0] == "wake me up inside" ) {
             chat.sendMessage(`SAVE ME`, stanza);
+        } else if ( match[0] == "save me" ) {
+            chat.sendMessage(`CALL MY NAME AND SAVE ME FROM THE DARK`, stanza);
         }
     }
 }];
