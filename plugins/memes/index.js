@@ -9,7 +9,7 @@ const brainPowerRegex = new RegExp( /^(brain|power|brain power|~power)$/ );
 const wakeUpRegex = new RegExp( /^(wake me up|wake me up inside|save me)$/ );
 const awpRegex = new RegExp( /^(~)awp$/ );
 const kelsRegex = new RegExp ( /^(~)lonedig$/ );
-const addMemeRegex = new RegExp( /^(~)meme\.add\smeme=(.+)\sregex=(.+)\srank=(admin|moderator|vip|donator|potato)$/ );
+const addMemeRegex = new RegExp( /^(~)meme\.add\smeme=(.+)\sregex=(.+)\srank=(admin|moderator|vip|donator|potato|null)$/ );
 const removeMemeRegex = new RegExp( /^(~)meme\.remove\s(.+)$/ );
 const runMemeRegex = new RegExp ( /(.+)$/ );
 
@@ -144,7 +144,7 @@ It ain't no game, just turn up all the beams when I come up on the scene
 
         if ( memeDB[newMemeID] === undefined ) {
 
-            if ( rank == "" || rank == undefined ) {
+            if ( rank == "null" || rank == undefined ) {
                 memeDB[newMemeID] = {
                     id: newMemeID,
                     meme: meme,
@@ -161,7 +161,7 @@ It ain't no game, just turn up all the beams when I come up on the scene
 
             runtime.brain.set("memeDB", memeDB);
 
-            if ( rank == "" || rank == undefined ) {
+            if ( rank == "null" || rank == undefined ) {
                 chat.sendMessage(`Added meme: ${meme}\nUse: ${regex} to use the meme`, stanza);
             } else {
                 chat.sendMessage(`Added meme: ${meme}\nUse: ${regex} to use the meme\nThis meme can be used by: ${rank} and higher`, stanza);
