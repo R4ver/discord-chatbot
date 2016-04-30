@@ -22,6 +22,10 @@
         "potato": {
             "name": "Potato",
             "weight": 0
+        },
+        "cancer": {
+            "name": "Cancer",
+            "weight": -100
         }
     }
 }
