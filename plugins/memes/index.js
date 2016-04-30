@@ -181,6 +181,11 @@ It ain't no game, just turn up all the beams when I come up on the scene
     types: ['message'],
     regex: removeMemeRegex,
     action: function( chat, stanza ) {
+        if ( !auth.has(stanza, 'moderator') ) {
+            console.log("Is not high enough rank");
+            return;
+        }
+
         //Get the regex content
         let message = stanza.message.toLowerCase();
         let match = removeMemeRegex.exec( message );
