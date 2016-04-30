@@ -9,7 +9,7 @@ const brainPowerRegex = new RegExp( /^(brain|power|brain power|~power)$/ );
 const wakeUpRegex = new RegExp( /^(wake me up|wake me up inside|save me)$/ );
 const awpRegex = new RegExp( /^(~)awp$/ );
 const kelsRegex = new RegExp ( /^(~)lonedig$/ );
-const addMemeRegex = new RegExp( /^(~)meme\.add\smeme=(.+)\sregex=(.+)$/ );
+const addMemeRegex = new RegExp( /^(~)meme\.add\smeme=(.+)\sregex=(.+)\srank=(admin|moderator|vip|donator|potato)$/ );
 const removeMemeRegex = new RegExp( /^(~)meme\.remove\s(.+)$/ );
 const runMemeRegex = new RegExp ( /(.+)$/ );
 
@@ -61,7 +61,6 @@ It ain't no game, just turn up all the beams when I come up on the scene
         
         let message = stanza.message.toLowerCase();
         let match = brainPowerRegex.exec( message );
-        console.log(match[0]);
 
         if ( match[0] == "~power" ) {
             chat.sendMessage(`**BRAIN POWER** ***O-OOOOOOOOOO AAAAE-A-A-I-A-U- JO-OOOOOOOOOO AAE-O-A-A-U-U-A- E-EEE-EE-EEE AAAAE-A-E-I-E-A- JO-OOO-OO-OO-OO***`, stanza);
@@ -126,6 +125,9 @@ It ain't no game, just turn up all the beams when I come up on the scene
         //Get regex
         let regex = match[3];
 
+        //get the rank
+        let rank = match[4];
+
         //Get the brain
         let memeDB = runtime.brain.get('memeDB') || {};
         let newMemeID = Object.keys(memeDB).length + 1;
@@ -142,15 +144,29 @@ It ain't no game, just turn up all the beams when I come up on the scene
 
         if ( memeDB[newMemeID] === undefined ) {
 
-            memeDB[newMemeID] = {
-                id: newMemeID,
-                meme: meme,
-                regex: regex
-            };
+            if ( rank == "" || rank == undefined ) {
+                memeDB[newMemeID] = {
+                    id: newMemeID,
+                    meme: meme,
+                    regex: regex,
+                };
+            } else {
+                memeDB[newMemeID] = {
+                    id: newMemeID,
+                    meme: meme,
+                    regex: regex,
+                    rank: rank
+                };
+            }
 
             runtime.brain.set("memeDB", memeDB);
 
-            chat.sendMessage(`Added meme: ${meme}\nUse: ${regex} to use the meme`, stanza);
+            if ( rank == "" || rank == undefined ) {
+                chat.sendMessage(`Added meme: ${meme}\nUse: ${regex} to use the meme`, stanza);
+            } else {
+                chat.sendMessage(`Added meme: ${meme}\nUse: ${regex} to use the meme\nThis meme can be used by: ${rank} and higher`, stanza);
+            }
+
         }
     }
 },{
@@ -171,9 +187,19 @@ It ain't no game, just turn up all the beams when I come up on the scene
         for ( let memes in memeDB ) {
             let dbMeme = memeDB[memes];
 
-            if ( meme == dbMeme.regex) {
-                chat.sendMessage(dbMeme.meme, stanza);
+            if ( dbMeme.rank == "" || dbMeme.rank == undefined ) {
+                if ( meme == dbMeme.regex) {
+                    chat.sendMessage(dbMeme.meme, stanza);
+                    return;
+                }
+            } else if ( dbMeme.rank !== "" || dbMeme.rank !== undefined ) {
+                if ( auth.has(stanza, dbMeme.rank) ) {
+                    if ( meme == dbMeme.regex) {
+                        chat.sendMessage(dbMeme.meme, stanza);
+                    }
+                }
             }
+
         }
     }
 },{
