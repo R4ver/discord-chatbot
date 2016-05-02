@@ -53,21 +53,6 @@ It ain't no game, just turn up all the beams when I come up on the scene
         chat.sendMessage(messages[randomNumber], stanza);
     }
 },{
-    name: 'AH WAH PAY',
-    types: ['message'],
-    regex: awpRegex,
-    action: function( chat, stanza ) {
-        let messages = [
-            "AH WAH PAY",
-            "#AHWAHPAY",
-            "RIP MOMAJOE126"
-        ];
-
-        let randomNumber = Math.floor(Math.random() * messages.length);
-
-        chat.sendMessage(`${messages[randomNumber]}`, stanza);
-    }
-},{
     name: 'Add meme',
     types: ['message'],
     regex: addMemeRegex,

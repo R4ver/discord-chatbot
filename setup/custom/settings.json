@@ -1,12 +1,9 @@
 {
     "plugins": {
         "op": true,
-        "rebelobot": true,
         "gitstats": true,
-        "musicplayer": false,
-        "kiandy-rules": true,
         "greetings": true,
         "memes": true,
-        "link-detector": true
+        "link-detector": false
     }
 }
