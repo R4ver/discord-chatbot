@@ -4,6 +4,6 @@
         "admin": true,
         "info": true,
         "presence": true,
-        "insult": true,
+        "insult": true
     }
 }
