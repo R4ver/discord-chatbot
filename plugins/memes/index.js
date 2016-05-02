@@ -53,44 +53,6 @@ It ain't no game, just turn up all the beams when I come up on the scene
         chat.sendMessage(messages[randomNumber], stanza);
     }
 },{
-    name: 'brain power',
-    types: ['message'],
-    regex: brainPowerRegex,
-    action: function( chat, stanza ) {
-        //Get the regex text
-        
-        let message = stanza.message.toLowerCase();
-        let match = brainPowerRegex.exec( message );
-
-        if ( match[0] == "~power" ) {
-            chat.sendMessage(`**BRAIN POWER** ***O-OOOOOOOOOO AAAAE-A-A-I-A-U- JO-OOOOOOOOOO AAE-O-A-A-U-U-A- E-EEE-EE-EEE AAAAE-A-E-I-E-A- JO-OOO-OO-OO-OO***`, stanza);
-        } else if ( match[0] == "brain" ) {
-            chat.sendMessage(`Brain?\n\n\nBrain Power!?`, stanza);
-        } else if ( match[0] == "power" ) {
-            chat.sendMessage(`Power?\n\n\nBrain Power!?`, stanza);
-        } else if ( match[0] == "brain power" ) {
-            chat.sendMessage(`***O-OOOOOOOOOO AAAAE-A-A-I-A-U- JO-OOOOOOOOOO AAE-O-A-A-U-U-A- E-EEE-EE-EEE AAAAE-A-E-I-E-A- JO-OOO-OO-OO-OO***`, stanza);
-        }
-    }
-},{
-    name: 'wake me up',
-    types: ['message'],
-    regex: wakeUpRegex,
-    action: function( chat, stanza ) {
-        //Get the regex text
-        
-        let message = stanza.message.toLowerCase();
-        let match = wakeUpRegex.exec( message );
-
-        if ( match[0] == "wake me up" ) {
-            chat.sendMessage(`WAKE ME UP INSIDE`, stanza);
-        } else if ( match[0] == "wake me up inside" ) {
-            chat.sendMessage(`SAVE ME`, stanza);
-        } else if ( match[0] == "save me" ) {
-            chat.sendMessage(`CALL MY NAME AND SAVE ME FROM THE DARK`, stanza);
-        }
-    }
-},{
     name: 'AH WAH PAY',
     types: ['message'],
     regex: awpRegex,
