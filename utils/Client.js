@@ -215,6 +215,16 @@ class Client {
         messages[ hash ] = messageObj;
         runtime.brain.set( 'messages', messages );
     }
+
+    deleteMessage(channelID, messageID) {
+        this.client.deleteMessage({
+            channel: channelID,
+            messageID: messageID
+        }, function(error) {
+            if ( error )
+                console.log(error);
+        });
+    }
 }
 
 module.exports = Client;

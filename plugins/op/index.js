@@ -15,7 +15,6 @@ module.exports = [{
     action: function( chat, stanza ) {
         let rawEvent = stanza.rawEvent;
 
-        // console.log(stanza);
         //Get the user
         let user = Client.getUser(stanza.user.id, stanza.user.username);
 
@@ -80,7 +79,6 @@ module.exports = [{
         //Get the chatOPS from the brain
         let OP = runtime.brain.get("chatOPS") || {};
         let opID = OP[stanza.user.id];
-        console.log()
 
         //Check if the opped user exists, print the rank, else the user is a viewer
         if ( opID ) {

@@ -6,6 +6,7 @@
         "musicplayer": false,
         "kiandy-rules": true,
         "greetings": true,
-        "memes": true
+        "memes": true,
+        "link-detector": true
     }
 }

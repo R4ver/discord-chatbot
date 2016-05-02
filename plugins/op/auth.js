@@ -33,7 +33,6 @@ module.exports = {
 
         //Check if user exists in the rank system.
         if ( OP[userID] == undefined ) {
-            console.log("User doesn't have a rank at all");
             return;
         }
 
