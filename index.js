@@ -1,9 +1,5 @@
 'use strict';
 
-/**
- * Discord chatbot
- */
-
 const credentials = require('./setup/custom/credentials');
 const Brain = require('./utils/Brain');
 const ChatBot = require('./utils/Chatbot');
