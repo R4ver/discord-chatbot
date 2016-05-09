@@ -5,7 +5,7 @@ const Client = require("../../utils/Client");
 const auth = require("./auth");
 const settings = require("./settings");
 
-let createOpRegex = new RegExp( /^(~)op\s\<@((\d)+)>\s\#((\w|\d)+)$/ ); //\s(\w|\d)\s\#((\w|\d)+)
+let createOpRegex = new RegExp( /^(~)op\s\<@!?((\d)+)>\s\#((\w|\d)+)$/ ); //\s(\w|\d)\s\#((\w|\d)+)
 let otherUserRank = new RegExp( /^(~)rank\s\<@(\d+)>$/ );
 
 module.exports = [{
@@ -23,9 +23,10 @@ module.exports = [{
         if ( user.isAdmin() || auth.has(stanza, "moderator") ) {
             let opLevels = settings.opLevels;
 
+            console.log(rawEvent);
             //Get the regex groups
             let match = createOpRegex.exec( stanza.message );
-            let newOpID = match[2];
+            let newOpID = rawEvent.d.mentions[0].id;
             let newOpName = rawEvent.d.mentions[0].username;
             let newOpLvl = match[4].toLowerCase();
             let opLvlName = opLevels[newOpLvl].name;

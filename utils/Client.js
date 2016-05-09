@@ -225,6 +225,18 @@ class Client {
                 console.log(error);
         });
     }
+
+    uploadFile(stanza, file) {
+        let receiver = stanza.rawEvent.channelID;
+
+        this.client.uploadFile({
+            to: receiver,
+            file: __dirname + "/../images/" + file
+        }, function(error, response) {
+            if ( error ) 
+                console.log(error);
+        });
+    }
 }
 
 module.exports = Client;
