@@ -4,6 +4,7 @@
         "gitstats": true,
         "greetings": true,
         "memes": true,
-        "link-detector": false
+        "link-detector": false,
+        "musicplayer": true
     }
 }

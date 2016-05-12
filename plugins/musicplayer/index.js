@@ -6,13 +6,13 @@ const Client            = require('../../utils/Client');
 const fetch             = require('node-fetch');
 const Log               = require('../../utils/Log');
 const auth              = require('../op/auth');
-const joinRegex         = new RegExp( "^(\\" + runtime.prefix + ")join\\s(.+)$" );
-const leaveRegex        = new RegExp( "^(\\" + runtime.prefix + ")leave$" );
-const playMusicRegex    = new RegExp( "^(\\" + runtime.prefix + ")playmusic$" );
-const stopMusicRegex    = new RegExp( "^(\\" + runtime.prefix + ")stopmusic$" );
-const addMusicRegex     = new RegExp( "^(\\" + runtime.prefix + ")addmusic\\s(.+)$" );
-const playNextRegex     = new RegExp( "^(\\" + runtime.prefix + ")playnext$" );
-const playPrevRegex     = new RegExp( "^(\\" + runtime.prefix + ")playprev$" );
+const joinRegex         = new RegExp( /^(~)join\s(.+)$/ );
+const leaveRegex        = new RegExp( /^(~)leave$/ );
+const playMusicRegex    = new RegExp( /^(~)playmusic$/ );
+const stopMusicRegex    = new RegExp( /^(~)stopmusic$/ );
+const addMusicRegex     = new RegExp( /^(~)addmusic\s(.+)$/ );
+const playNextRegex     = new RegExp( /^(~)playnext$/ );
+const playPrevRegex     = new RegExp( /^(~)playprev$/ );
 
 //Initialize new Player
 let player = new Player();
