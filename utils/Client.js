@@ -28,7 +28,6 @@ class Client {
         this.client.on('ready', function () {
             Log.log( 'Connected' );
             this.setup();
-            //this.sendPressence();
         }.bind(this) );
     }
 
@@ -42,13 +41,6 @@ class Client {
         this.client.setPresence({
             game: "with cat girls"    
         });
-    }
-
-    sendPressence() {
-        this.client.sendMessage({
-            to: this.credentials.channel,
-            message: runtime.credentials.botName + " 2.0 Initialized"
-        })
     }
 
     listen(action) {
@@ -112,6 +104,13 @@ class Client {
         let message = rawEvent.d.content;
         let rateLimited = false;
 
+        let user = Client.getUser( userID, username );
+
+        if ( this.checkBlacklist(userID) && !user.isAdmin() ) {
+            console.log(`User is blacklisted`);
+            return;
+        }
+
         // Rate limiting
         const now = new Date().getTime();
         let messages = runtime.brain.get( 'userMessages' ) || {};
@@ -126,10 +125,24 @@ class Client {
             }
         }
 
-        let user = Client.getUser( userID, username );
-
         // Return the parsed message
         return { type, user, message, rateLimited, rawEvent };
+    }
+
+    /**
+     * Check if user is blacklisted
+     * @return {bool}
+     */
+    static checkBlacklist(userID) {
+        let blacklist = runtime.brain.get('blacklist');
+
+        for ( let user in blacklist ) {
+            if ( userID == blacklist[user] ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     getServers() {

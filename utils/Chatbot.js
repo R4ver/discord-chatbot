@@ -62,6 +62,10 @@ class ChatBot {
 
             let parsedMessage = Client.parseMessage(message, runtime.credentials);
 
+            if ( parsedMessage == undefined ) {
+                return;
+            }
+
             parsedMessage.ranCommand = false;
             // Run the incoming stanza against
             // the core commands for the stanza's type.
@@ -121,7 +125,7 @@ class ChatBot {
      */
     static isStartingUp() {
         const messageTime = new Date().getTime();
-        if ( messageTime - runtime.startUpTime < 10000 ) { // 10 seconds
+        if ( messageTime - runtime.startUpTime < 3000 ) { // 10 seconds
             Log.log('Starting up, skipping message');
             return true;
         }
