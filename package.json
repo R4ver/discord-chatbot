@@ -16,6 +16,7 @@
     "node-persist": "0.0.8"
   },
   "dependencies": {
-    "discord.io": "^1.8.8"
+    "discord.io": "^1.8.8",
+    "immutable": "^3.8.1"
   }
 }

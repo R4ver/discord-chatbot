@@ -8,7 +8,7 @@ The structure is the same as his bot, but some core files has been changed to fi
 'use strict'
 
 const runtime = require('../utils/Runtime');
-const regex = new RegExp( "^(\\" + runtime.prefix + ")ping$" );
+const regex = new RegExp( "^("Your prefix here")ping$" );
 
 module.exports = [{
     name: 'ping',
@@ -19,9 +19,6 @@ module.exports = [{
     }
 }];
 ```
-
-`runtime.prefix` is set in the settings file and defines the custom prefix for the bot
-
 *More readme comming later*
 
 # License
