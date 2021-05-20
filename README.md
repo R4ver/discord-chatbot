@@ -1,3 +1,5 @@
+# !! THIS REPO IS NOT IN USE ANY MORE AND HAS SECURITY VULNERABILITIES !!
+
 # SD Discord Bot
 This bot is a modified version of [Owen Conti's](https://github.com/owenconti/) LiveCoding.tv chatbot.
 The structure is the same as his bot, but some core files has been changed to fit [discord.io](https://github.com/izy521/discord.io)
